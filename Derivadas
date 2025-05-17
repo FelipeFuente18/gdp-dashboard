@@ -1,0 +1,59 @@
+importar streamlit como st
+importar sympy como sp
+importar numpy como np
+importar matplotlib.pyplot como plt
+
+# Definir la variable simbólica
+x = sp.Símbolo('x')
+
+# Entrada del usuario
+st.title("Cálculo de Derivadas y Recta Tangente")
+coef_str = st.text_input("Introduzca los coeficientes separados por comas:", "3,2,-1")
+exp_str = st.text_input("Introduce los exponentes correspondientes separados por comas:", "2,1,0")
+
+intentar:
+    coeficientes = lista(mapa(flotante, coef_str.split(',')))
+    exponentes = lista(mapa(int, exp_str.split(',')))
+
+    si len(coeficientes) == len(exponentes):
+        func = suma(coef * x**exp for coef, exp in zip(coeficientes, exponentes))
+        derivada = sp.diff(func, x)
+        
+        st.write(f"**Función creada:** {func}")
+        st.write(f"**Derivada:** {derivada}")
+
+        # Rango para graficar
+        rango_min = st.number_input("Introduzca el valor mínimo del rango:", valor=-10.0)
+        rango_max = st.number_input("Introduzca el valor máximo del rango:", valor=10.0)
+        x_tangent = st.number_input("Introduce el valor de x para la recta tangente:", valor=0.0)
+
+        si rango_min < rango_max:
+            x_vals = np.linspace(rango_min, rango_max, 500)
+            func_vals = [func.evalf(subs={x: val}) para val en x_vals]
+            derivada_vals = [derivada.evalf(subs={x: val}) para val en x_vals]
+
+            # Calcular recta tangente
+            y_tangente = func.evalf(subs={x: x_tangente})
+            m_tangente = derivada.evalf(subs={x: x_tangente})
+            recta_tangente = [m_tangente * (val - x_tangente) + y_tangente para val en x_vals]
+
+            # Graficar
+            fig, ax = plt.subplots(figsize=(8, 5))
+            ax.plot(x_vals, func_vals, label="Función original", color="azul")
+            ax.plot(x_vals, deriva_vals, etiqueta="Derivada", color="rojo", estilo de línea="--")
+            ax.plot(x_vals, tangent_line, etiqueta="Recta tangente", color="verde", estilo de línea=":")
+            ax.scatter([x_tangent], [y_tangent], color="negro", etiqueta="Punto de tangencia")
+            ax.set_title("Función, Derivada y Recta Tangente")
+            ax.set_xlabel("x")
+            ax.set_ylabel("y")
+            hacha.leyenda()
+            ax.grid(Verdadero)
+
+            st.pyplot(fig)
+        demás:
+            st.warning("El valor mínimo debe ser menor que el máximo.")
+    demás:
+        st.warning("El número de coeficientes y exponentes no coincide.")
+
+excepto ValueError:
+    st.warning("Entrada inválida. Usa números separados por comas.")
